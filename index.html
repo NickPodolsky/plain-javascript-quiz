@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<head>
+<title>Random Quiz</title>
+<style>
+body {margin: 0 20%;}
+
+/* Timer */
+#timerAndFinish {
+    padding: 0.5em;
+    color: #4B4948;
+    text-align:  right;
+}
+#timerAndFinish span {
+    margin-left: 1em;
+}
+#reverseTimer.expired {
+    font-size: 1.2em;
+    color: #E24705;
+}
+
+ /* Test block */
+ #test {
+     box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.5);
+     border-radius: 3px;
+ }
+
+ #testQuestion {
+     margin-bottom: 1em;
+     padding: 1em;
+
+     background-color: #F4F1EC;
+     color: #4B4948;
+     font-weight: 300;
+     font-size: 1.2em;
+     line-height: 1.5em;
+
+ }
+
+ #testAnswers {text-align: left;}
+ #testAnswers div{
+     font-size: 1.2em;
+     line-height: 1.2em;
+     padding: 0.5em 1em;
+     border-bottom: 1px solid rgba(98, 120, 148, 0.05);
+ }
+
+#testAnswers input[type="text"] {
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    outline: none;
+    height: 1.5em;
+    width: 30%;
+    padding: 0.2em;
+    text-align: center;
+    color: #4B4948;
+    font-size: 1.3em;
+}
+
+
+ /* List of test results */
+ div.resultItem {margin: 1em 10%}
+ div.resultItem div {padding: 0.5em}
+ div.resultItem .label {width: 20%; padding-right: 1em}
+ div.resultItem.correct {background-color: #C8F7C8;}
+ div.resultItem.incorrect {background-color: #F9A3B5; }
+ div.resultItem .question {border-bottom: 1px solid #DDDDDD; padding: 1em}
+ div.resultItem .rightAnswer {background-color: #C8F7C8;}
+
+ /* Control panel */
+ #controlPanel {margin: 1em 10%;}
+ #controlPanel div {margin: 1em;}
+
+ /* Default button style */
+ a.btn {
+     display: inline-block;
+     margin: 3px;
+     border: 1px solid #627894;
+     border-radius: 2px;
+     background-color: #A0AEC1;
+     color: #fff;
+     text-decoration: none;
+     text-align: center;
+     line-height: 2em;
+ }
+ a:hover.btn {background-color: #627894;}
+ a.btn.inactive {pointer-events: none;  opacity: .5;}
+ a.btn:hover.inactive {background-color: #F4F1EC; border:none;}
+
+ /* Submit button */
+ #containerSubmitButton {margin-bottom: 2em; text-align: center;}
+ #containerSubmitButton a.btn {
+     background-color: #F4F1EC;
+     color: #4B4948;
+     border-color: rgba(199, 184, 158, 0.4);
+     padding: 0.4em 0.5em;
+     font-size: 1.3em;;
+     line-height: 1.3em;
+     text-decoration: none;
+ }
+#containerSubmitButton a.btn:hover {background-color: #C1D700; border: 1px solid #C1D700;}
+
+ /* Navigation buttons */
+ #containerNavigationButtons {text-align: center;}
+ #containerNavigationButtons a.btn {
+     width: 5em;
+     margin: 5px;
+     padding: 0.2em 0.5em;
+     font-size: 1em;
+     line-height: 1em;
+ }
+
+
+ /* List of questions */
+ #containerQuestionsList {text-align: center;}
+ #containerQuestionsList a {
+     width: 2em;
+     height: 2em;
+     margin: 3px;
+     line-height: 2em;
+ }
+ #controlPanel a.current {background-color: #627894;}
+ #containerQuestionsList a.answered {background-color: #018ABE;}
+ #containerQuestionsList a.correct {background-color: #DCF600; border: 1px solid #C1D700;}
+ #containerQuestionsList a:hover.correct {background-color: #C1D700;}
+ #containerQuestionsList a.current.correct {background-color: #C1D700;}
+ #containerQuestionsList a.incorrect {background-color: #FA6121; border: 1px solid #E24705;}
+ #containerQuestionsList a:hover.incorrect {background-color: #E24705;}
+ #containerQuestionsList a.current.incorrect {background-color: #E24705;}
+
+/* Finish or new test button */
+a.btn.finishOrNewTest {line-height: 2em; padding: 0 0.3em;}
+a:hover.btn.finishOrNewTest {background-color: #FF9900; border-color: #E24800;}
+
+</style>
+</head>
+<body>
+
+
+<div>
+ <h2 id="test_status">Math Quiz: <span id="status"></span></h2>
+ <div id="timerAndFinish">
+     <span id="reverseTimer">Time left</span>
+     <span id="finishOrNewTestButton"></span>
+ </div>
+</div>
+<div id="test">
+    <div id="testQuestion"></div>
+    <div id="testAnswers"></div>
+    <div id="controlPanel"></div>
+</div>
+
+
+
+
+
+
+<script src="vendor/math.min.js"></script>
+<script src="utils/qFraction.js"></script>
+<script src="utils/qNumber.js"></script>
+<script src="utils/qEvent.js"></script>
+
+<script src="utils/qCollection.js"></script>
+<script src="placeholders.js"></script>
+
+<script src="questionGenerator.js"></script>
+<script src="generators/_generic.js"></script>
+<script src="generators/volume.js"></script>
+<script src="generators/fractions_addition.js"></script>
+<script src="generators/moreOrLess.js"></script>
+<script src="generators/multipleChoice.js"></script>
+
+<script src="factories/generic.js"></script>
+
+<script src="test-manager.js"></script>
+<script src="test-manager-components/test-manager_timer.js"></script>
+<script src="test-manager-components/test-manager_question-renderer.js"></script>
+<script src="test-manager-components/test-manager_control-panel.js"></script>
+<script src="test-manager-components/test-manager_test-results.js"></script>
+<script src="test-manager-components/test-manager_current-status.js"></script>
+
+<script src="sets/set_1.js"></script>
+
+<script>
+
+
+    var questionSet = new QuestionFactories.Generic(QuestionSets.Set_1);
+
+    var test = new TestManager();
+    test.setQuestions(questionSet);
+    test.run();
+
+/*
+    var test = new TestManager();
+    test.setQuestions([
+        new QuestionGenerators.Fractions_addition(),
+        new QuestionGenerators.Volume(),
+        new QuestionGenerators.MoreOrLess(),
+        new QuestionGenerators.MoreOrLess('manualInput'),
+        new QuestionGenerators.MultipleChoice()
+    ]);
+
+    test.run();
+*/
+</script>
+
+</body>
+</html>  
